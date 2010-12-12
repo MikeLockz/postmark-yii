@@ -30,7 +30,7 @@
  *      ->send();
  */
  
-class Mail_Postmark
+class Postmark
 {
 	const DEBUG_OFF = 0;
 	const DEBUG_VERBOSE = 1;
