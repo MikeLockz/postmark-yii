@@ -34,8 +34,8 @@
 // config array under "params"
 $params = Yii::app()->params;
 defined('POSTMARKAPP_API_KEY') or define('POSTMARKAPP_API_KEY',$params->postmarkApiKey);
-defined('POSTMARKAPP_MAIL_FROM_ADDRESS') or define('POSTMARKAPP_MAIL_FROM_ADDRESS',$params->emailFromAddress);
-defined('POSTMARKAPP_MAIL_FROM_NAME') or define('POSTMARKAPP_MAIL_FROM_NAME',$params->emailFromName);
+defined('POSTMARKAPP_MAIL_FROM_ADDRESS') or define('POSTMARKAPP_MAIL_FROM_ADDRESS',$params->adminEmail);
+defined('POSTMARKAPP_MAIL_FROM_NAME') or define('POSTMARKAPP_MAIL_FROM_NAME',$params->adminName);
 
 class Postmark
 {
@@ -66,32 +66,17 @@ class Postmark
 	*/
 	public function __construct()
 	{
-		if (class_exists('Mail_Postmark_Adapter')) {
-			require_once('Adapter_Interface.php');
-			
-			$reflection = new ReflectionClass('Mail_Postmark_Adapter');
-			
-			if (!$reflection->implementsInterface('Mail_Postmark_Adapter_Interface')) {
-				trigger_error('Mail_Postmark_Adapter must implement interface Mail_Postmark_Adapter_Interface', E_USER_ERROR);
-			}
-			
-			$this->_apiKey = Mail_Postmark_Adapter::getApiKey();
-			
-			Mail_Postmark_Adapter::setupDefaults($this);
-			
-		} else {
-			if (!defined('POSTMARKAPP_API_KEY')) {
-				trigger_error('Postmark API key is not set', E_USER_ERROR);
-			}
-			
-			$this->_apiKey = POSTMARKAPP_API_KEY;
-			
-			if (defined('POSTMARKAPP_MAIL_FROM_ADDRESS')) {
-				$this->from(
-					POSTMARKAPP_MAIL_FROM_ADDRESS,
-					defined('POSTMARKAPP_MAIL_FROM_NAME') ? POSTMARKAPP_MAIL_FROM_NAME : null
-				);
-			}
+		if (!defined('POSTMARKAPP_API_KEY')) {
+			trigger_error('Postmark API key is not set', E_USER_ERROR);
+		}
+
+		$this->_apiKey = POSTMARKAPP_API_KEY;
+
+		if (defined('POSTMARKAPP_MAIL_FROM_ADDRESS')) {
+			$this->from(
+				POSTMARKAPP_MAIL_FROM_ADDRESS,
+				defined('POSTMARKAPP_MAIL_FROM_NAME') ? POSTMARKAPP_MAIL_FROM_NAME : null
+			);
 		}
 		
 		$this->messageHtml(null)->messagePlain(null);
@@ -574,12 +559,7 @@ class Postmark
 	* 
 	* @param array $logData
 	*/
-	private function _log($logData)
-	{
-		if (class_exists('Mail_Postmark_Adapter')) {
-			Mail_Postmark_Adapter::log($logData);
-		}
-	}
+	private function _log($logData) {}
 	
 	/**
 	* Validates an e-mailadress
