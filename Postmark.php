@@ -29,7 +29,14 @@
  *	    ->tag('Test tag')
  *      ->send();
  */
- 
+
+// Postmark constants are autodefined here, put your own settings in the main.php
+// config array under "params"
+$params = Yii::app()->params;
+defined('POSTMARKAPP_API_KEY') or define('POSTMARKAPP_API_KEY',$params->postmarkApiKey);
+defined('POSTMARKAPP_MAIL_FROM_ADDRESS') or define('POSTMARKAPP_MAIL_FROM_ADDRESS',$params->emailFromAddress);
+defined('POSTMARKAPP_MAIL_FROM_NAME') or define('POSTMARKAPP_MAIL_FROM_NAME',$params->emailFromName);
+
 class Postmark
 {
 	const DEBUG_OFF = 0;
